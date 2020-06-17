@@ -18,7 +18,7 @@
 					"source": {
 						"type": "DelimitedTextSource",
 						"storeSettings": {
-							"type": "FileServerReadSettings",
+							"type": "AzureFileStorageReadSettings",
 							"recursive": true
 						},
 						"formatSettings": {
@@ -61,13 +61,33 @@
 									"name": "county",
 									"type": "String"
 								}
+							},
+							{
+								"source": {
+									"name": "eq_site_limit",
+									"type": "String"
+								},
+								"sink": {
+									"name": "eq_site_limit",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "hu_site_limit",
+									"type": "String"
+								},
+								"sink": {
+									"name": "hu_site_limit",
+									"type": "String"
+								}
 							}
 						]
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "DelimitedText1",
+						"referenceName": "DelimitedText2",
 						"type": "DatasetReference"
 					}
 				],
