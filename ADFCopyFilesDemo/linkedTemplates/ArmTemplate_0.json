@@ -7,27 +7,45 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "ADFCopyFilesDemo"
 		},
+		"AzureFileStorage1_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'AzureFileStorage1'"
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureSqlDatabase1'"
 		},
-		"FileServer1_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'FileServer1'"
-		},
-		"FileServer1_properties_typeProperties_host": {
+		"AzureFileStorage1_properties_typeProperties_host": {
 			"type": "string",
-			"defaultValue": "C:\\DataOps"
+			"defaultValue": "\\\\hcldevopsdiag.file.core.windows.net\\testjune17"
 		},
-		"FileServer1_properties_typeProperties_userId": {
+		"AzureFileStorage1_properties_typeProperties_userId": {
 			"type": "string",
-			"defaultValue": "rajeev chugh"
+			"defaultValue": "Azure\\hcldevopsdiag"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureFileStorage1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureFileStorage",
+				"typeProperties": {
+					"host": "[parameters('AzureFileStorage1_properties_typeProperties_host')]",
+					"userId": "[parameters('AzureFileStorage1_properties_typeProperties_userId')]",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('AzureFileStorage1_password')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlDatabase1')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -48,6 +66,25 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/integrationRuntime1')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "Managed",
+				"typeProperties": {
+					"computeProperties": {
+						"location": "AutoResolve",
+						"dataFlowProperties": {
+							"computeType": "General",
+							"coreCount": 8,
+							"timeToLive": 0
+						}
+					}
+				}
 			},
 			"dependsOn": []
 		},
@@ -95,43 +132,19 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/FileServer1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "FileServer",
-				"typeProperties": {
-					"host": "[parameters('FileServer1_properties_typeProperties_host')]",
-					"userId": "[parameters('FileServer1_properties_typeProperties_userId')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('FileServer1_password')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "IRcopyfileLaptop",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/IRcopyfileLaptop')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"name": "[concat(parameters('factoryName'), '/DelimitedText2')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "FileServer1",
+					"referenceName": "AzureFileStorage1",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "DelimitedText",
 				"typeProperties": {
 					"location": {
-						"type": "FileServerLocation",
+						"type": "AzureFileStorageLocation",
 						"fileName": "FL_insurance_sample.csv"
 					},
 					"columnDelimiter": ",",
@@ -215,7 +228,7 @@
 				]
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/FileServer1')]"
+				"[concat(variables('factoryId'), '/linkedServices/AzureFileStorage1')]"
 			]
 		},
 		{
@@ -240,7 +253,7 @@
 							"source": {
 								"type": "DelimitedTextSource",
 								"storeSettings": {
-									"type": "FileServerReadSettings",
+									"type": "AzureFileStorageReadSettings",
 									"recursive": true
 								},
 								"formatSettings": {
@@ -283,13 +296,33 @@
 											"name": "county",
 											"type": "String"
 										}
+									},
+									{
+										"source": {
+											"name": "eq_site_limit",
+											"type": "String"
+										},
+										"sink": {
+											"name": "eq_site_limit",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "hu_site_limit",
+											"type": "String"
+										},
+										"sink": {
+											"name": "hu_site_limit",
+											"type": "String"
+										}
 									}
 								]
 							}
 						},
 						"inputs": [
 							{
-								"referenceName": "DelimitedText1",
+								"referenceName": "DelimitedText2",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -306,7 +339,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/DelimitedText2')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlTable1')]"
 			]
 		}

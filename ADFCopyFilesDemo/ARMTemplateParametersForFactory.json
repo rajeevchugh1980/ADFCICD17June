@@ -5,17 +5,17 @@
 		"factoryName": {
 			"value": "ADFCopyFilesDemo"
 		},
+		"AzureFileStorage1_password": {
+			"value": ""
+		},
 		"AzureSqlDatabase1_connectionString": {
 			"value": ""
 		},
-		"FileServer1_password": {
-			"value": ""
+		"AzureFileStorage1_properties_typeProperties_host": {
+			"value": "\\\\hcldevopsdiag.file.core.windows.net\\testjune17"
 		},
-		"FileServer1_properties_typeProperties_host": {
-			"value": "C:\\DataOps"
-		},
-		"FileServer1_properties_typeProperties_userId": {
-			"value": "rajeev chugh"
+		"AzureFileStorage1_properties_typeProperties_userId": {
+			"value": "Azure\\hcldevopsdiag"
 		}
 	}
 }
