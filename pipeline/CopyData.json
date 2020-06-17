@@ -61,26 +61,6 @@
 									"name": "county",
 									"type": "String"
 								}
-							},
-							{
-								"source": {
-									"name": "eq_site_limit",
-									"type": "String"
-								},
-								"sink": {
-									"name": "eq_site_limit",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"name": "hu_site_limit",
-									"type": "String"
-								},
-								"sink": {
-									"name": "hu_site_limit",
-									"type": "String"
-								}
 							}
 						]
 					}
